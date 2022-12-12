@@ -1,5 +1,5 @@
 
-# cordova-plugin-jason-douyin
+# cordova-plugin-douyin
 
 A cordova plugin, a JS version of Douyin SDK
 
