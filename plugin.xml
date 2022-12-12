@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+    xmlns:rim="http://www.blackberry.com/ns/widgets"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    id="cordova-plugin-jasonhe-douyin"
+    version="1.0.0">
+
+    <name>Douyin</name>
+    <description>A cordova plugin, a JS version of Douyin SDK</description>
+    <license>MIT</license>
+    <keywords>cordova,douyin,share</keywords>
+    <repo>https://gitee.com/zhujin001032/cordova-plugin-douyin.git</repo>
+    <issue>https://gitee.com/zhujin001032/cordova-plugin-douyin/issues</issue>
+
+    <!-- add this to your config.xml -->
+    <!-- <preference name="DOUYINAPPID" value="YOUR_DOUYIN_APP_ID_HERE" /> -->
+    <preference name="DOUYINAPPID" />
+
+    <!-- js module-->
+    <js-module src="www/douyin.js" name="Douyin">
+        <clobbers target="Douyin" />
+    </js-module>
+
+    <!-- ios -->
+    <platform name="ios">
+        <config-file target="config.xml" parent="/*">
+            <feature name="Douyin">
+                <param name="ios-package" value="CDVDouyin"/>
+                <param name="onload" value="true" />
+            </feature>
+            <preference name="DOUYINAPPID" value="$DOUYINAPPID"/>
+        </config-file>
+
+        <config-file target="*-Info.plist" parent="LSApplicationQueriesSchemes">
+            <array>
+                <string>douyin</string>
+            </array>
+        </config-file>
+
+        <config-file target="*-Info.plist" parent="NSAppTransportSecurity">
+            <dict>
+                <key>NSAllowsArbitraryLoads</key>
+                <true/>
+            </dict>
+        </config-file>
+
+
+        <config-file target="*-Info.plist" parent="CFBundleURLTypes">
+            <array>
+                <dict>
+                    <key>CFBundleURLName</key>
+                    <string>douyin</string>
+                    <key>CFBundleURLSchemes</key>
+                    <array>
+                        <string>$DOUYINAPPID</string>
+                    </array>
+                </dict>
+            </array>
+        </config-file>
+
+        <!-- Plugin source code -->
+        <header-file src="src/ios/CDVDouyin.h" />
+        <source-file src="src/ios/CDVDouyin.m" />
+
+        <!-- douyin Official -->
+        <framework src="src/ios/libs/DouyinOpenSDK.framework" custom="true"/>
+    
+
+        <!-- Other required frameworks -->
+        <framework src="WebKit.framework" />
+        <framework src="Security.framework" />
+    
+    </platform>
+
+    <!-- android -->
+    <platform name="android">
+        <hook type="after_plugin_add" src="scripts/android-install.js" />
+        <hook type="after_plugin_install" src="scripts/android-install.js" />
+        <hook type="before_plugin_rm" src="scripts/android-install.js" />
+        <hook type="before_plugin_uninstall" src="scripts/android-install.js" />
+
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="Douyin">
+                <param name="android-package" value="jason.he.cordova.douyin.Douyin"/>
+            </feature>
+            <preference name="DOUYINAPPID" value="$DOUYINAPPID"/>
+        </config-file>
+
+        <config-file target="AndroidManifest.xml" parent="/*">
+            <uses-permission android:name="android.permission.INTERNET"/>
+            <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+            <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+            <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+            <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+            <queries> 
+                <!--允许查询抖音和抖音极速版的软件包信息-->
+                <package android:name="com.ss.android.ugc.aweme" />
+                <package android:name="com.ss.android.ugc.aweme.lite" />
+              </queries>
+        </config-file>
+
+        <config-file target="AndroidManifest.xml" parent="/manifest/application">
+            <activity
+                android:name=".douyinapi.DouYinEntryActivity"
+                android:label="@string/launcher_name"
+                android:exported="true">
+                <intent-filter>
+                    <action android:name="android.intent.action.VIEW"/>
+                    <category android:name="android.intent.category.DEFAULT"/>
+                    <data android:scheme="$DOUYINAPPID"/>
+                </intent-filter>
+            </activity>
+        </config-file>
+        
+        <source-file src="src/android/Douyin.java" target-dir="src/jason/he/cordova/douyin" />
+        <source-file src="src/android/Util.java" target-dir="src/jason/he/cordova/douyin" />
+        <framework src="android-build.gradle" custom="true" type="gradleReference" />
+    </platform>
+</plugin>
